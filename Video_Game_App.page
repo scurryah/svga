@@ -1,0 +1,899 @@
+<apex:page controller="CTRL" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+<!-- <apex:includeScript value="{!$Resource.notify_js_1}" loadOnReady="true" /> -->
+
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+    
+    <head>
+        <style>
+        
+            #results-list{
+                width: 80%;
+            }
+            
+        </style>
+        
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <title>Simple Video Game Search App</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!-- Import the Design System style sheet -->
+        <apex:slds />
+
+       
+       <!-- <script src="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" ></script> -->
+       <!-- <script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" ></script> -->
+    </head>
+    
+    <apex:remoteObjects >
+        <apex:remoteObjectModel name="Account" fields="Id,Name,LastModifiedDate"/>
+        <apex:remoteObjectModel name="Task" fields="Id,Subject,LastModifiedDate"/>
+        <apex:remoteObjectModel name="Video_Game__c" fields="Id,Name,LastModifiedDate"/>
+    </apex:remoteObjects>
+    
+    
+
+
+    <body>
+        <div class="slds-scope" id="body-header">
+                    
+            <!-- MASTHEAD -->
+            <p class="slds-text-heading_label slds-m-bottom_small">
+            Simple Video Game Search App
+            </p>
+            <!-- / MASTHEAD -->
+
+            <!-- PRIMARY CONTENT WRAPPER -->
+            <div class="myapp" id="app-header">
+                
+                <!-- CREATE NEW ACCOUNT -->
+                <div aria-labelledby="newsearchform">
+                    
+                    <!-- CREATE NEW ACCOUNT FORM -->
+                    <form class="slds-form_stacked" id="add-search-form">
+                        
+                        <!-- BOXED AREA -->
+                        <fieldset class="slds-box slds-theme_default slds-container_small">
+                            <legend id="newsearchform" class="slds-text-heading_medium slds-p-vertical_small">Search for a Game</legend>
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="query-term">Game</label>
+                                <div class="slds-form-element__control">
+                                    <input id="query-term" class="slds-input" type="text" placeholder="Enter a game title"/>
+                                </div>
+                            </div>
+                            <button class="slds-button slds-button_brand slds-m-top_small" type="submit">Search</button>
+                        </fieldset>
+                        <!-- / BOXED AREA -->
+                        
+                    </form>
+                    <!-- CREATE NEW VIDEO GAME FORM -->
+                    
+                </div>
+                <!-- / CREATE NEW VIDEO GAME -->
+                
+                <!-- VIDEO GAME LIST TABLE -->
+                <div id="results-list" class="slds-p-vertical_medium slds-hidden">
+                    <table class="slds-table slds-table_bordered slds-no-row-hover slds-table_striped">
+                        <thead>
+                            <tr>
+                                <td class="slds-cell-shrink"></td>
+                                <td scope="col" class="slds-text-heading_label">Game Name</td>
+                                <td scope="col" class="slds-text-heading_label">Release Date</td>
+                                <td scope="col" class="slds-text-heading_label">Status</td>
+                                <td scope="col" class="slds-text-heading_label">Actions</td>
+                            </tr>
+                        </thead>
+                        <tbody id="results-body">
+                            <!-- <tr>
+                                <td><span class="slds-icon_container slds-icon-standard-account"><svg aria-hidden="true" style="height: 50; width: 75"><image xlink:href="https://www.giantbomb.com/api/image/square_avatar/2550125-haloce.jpg" style="height: 50; width: 75"></image></svg></span></td>
+                                <td class="slds-cell-wrap"><a href="https://www.giantbomb.com/halo-combat-evolved/3030-2600/">Halo: Combat Evolved</a></td>
+                                <td class="slds-cell-wrap">https://www.giantbomb.com/halo-combat-evolved/3030-2600/</td>
+                                <td>11/15/2001</td>
+                                <td>
+                                    <div class="slds-dropdown-trigger slds-dropdown-trigger_click" onclick="controller.toggleVisibility(2600)" role="menu" aria-expanded="false" id="menuId-2600">
+                                        <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" aria-haspopup="true" tabindex="-1" title="More Actions">
+                                            <svg class="slds-button__icon slds-button__icon_hint slds-button__icon_small" aria-hidden="true">
+                                                <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#down"></use>
+                                            </svg>
+                                        </button>
+                                        <div class="slds-dropdown slds-dropdown_right">
+                                            <ul class="slds-dropdown__list" role="menu" aria-label="Show More">
+                                                <li class="slds-dropdown__item" role="presentation" onclick="controller.addToCollection(2600,'wishlist')"><a href="javascript:void(0);" role="menuitem" tabindex="-1"><span class="slds-truncate" title="Add to Wishlist">Add to Wishlist</span></a></li>
+                                                <li class="slds-dropdown__item" role="presentation" onclick="controller.addToCollection(2600,'collection')"><a href="javascript:void(0);" role="menuitem" tabindex="-1"><span class="slds-truncate" title="Add to Collection">Add to Collection</span></a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr> -->
+                            
+                        </tbody>
+                    </table>
+                </div>
+                <!-- / ACCOUNT LIST TABLE -->
+
+            
+            </div>
+            <!-- / PRIMARY CONTENT WRAPPER -->
+
+            <!-- FOOTER -->
+            <footer role="contentinfo" class="slds-p-around_large">
+                <!-- LAYOUT GRID -->
+                <div class="slds-grid slds-grid_align-spread">
+                    <p class="slds-col">Simple Video Game Search App</p>
+                    <p class="slds-col">By Hank Scurry</p>
+                    <p class="slds-col"><a href="https://www.giantbomb.com/api/" target="_blank" class="link">GiantBomb</a></p>
+                </div>
+                <!-- / LAYOUT GRID -->
+            </footer>
+            <!-- / FOOTER -->
+           
+        </div>
+        
+        <!-- <script type='text/javascript' src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js" ></script> -->
+        <!-- <script type='text/javascript' src="https://c.na174.visual.force.com/resource/1579384603000/notify_js_1"></script> -->
+        
+        <script type='text/javascript'>
+        /***
+         * TO DO
+         * ADD LOADING SPINNER
+         * CREATE UNMANAGED PACKAGE
+         * IMPLEMENT NOTES
+         * **/
+
+        /* **
+         * README
+         * ENSURE THAT YOUR API KEY IS STORED AS A STATIC RESOURCE CALLED GB_API_KEY
+         * REPLACE ownedGameRT AND likedGameRT WITH YOUR RECORDTYPEID
+         * 
+         * **/
+        
+        const state = {
+            results: {},
+            res: {},
+            platforms: ['PlayStation 5','Xbox Series X','PlayStation 4','Nintendo Switch','Amazon Fire TV','Xbox One','Wii U','Wii','PlayStation 3','Xbox 360','GameCube','PlayStation 2','Nintendo 64','PlayStation', 'PC', 'Xbox'],
+            ownedGames: {},
+            likedGames: [],
+            ownedGameRT: '0126g000000ZDGBAA4',
+            likedGameRT: '0126g000000ZDG6AAO'
+
+        };
+
+        // get the static html elements
+        const elements = {
+            searchForm: document.getElementById('add-search-form'),
+            searchInput: document.getElementById('query-term'),
+            searchResList: document.getElementById('results-list'),
+            searchResBody: document.getElementById('results-body'),
+            successToast: document.getElementById('success-toast')
+            
+        };
+
+        // add event listener for search
+        elements.searchForm.addEventListener('submit', e =>{
+            e.preventDefault();
+            controlSearch(elements.searchInput.value);
+
+        });
+
+        const mobileCheck = function() {
+            // set the check to desktop
+            state.check = false;
+            
+            // change to mobile if orientation is defined
+            if (typeof window.orientation !== 'undefined') {
+                state.check = true;
+            };      
+                  
+        };
+
+        const getGames = function() {
+
+            // clear ownedGames
+            state.ownedGames = {}
+            state.likedGames = []
+
+            // get the latest ownedGames
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.CTRL.getGames}', state.ownedGameRT, 
+                function(response, event) 
+                {
+                    if(event.statusCode == 200) 
+                    {
+                        state.ownedGames = response;                      
+                    };
+                });
+
+             // get the latest likedGames
+             Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.CTRL.getGames}', state.likedGameRT, 
+                function(response, event) 
+                {
+                    if(event.statusCode == 200) 
+                    {
+                        state.likedGames = response;                                
+                    };
+                });
+
+        };
+
+        const controlSearch = async () => {
+        // get the query
+        const query = elements.searchInput.value;
+        
+            if(query) {
+                
+                Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.CTRL.sendGBRequest}', query,
+                
+                function(response, event) 
+                    {
+                    
+                        if(event.statusCode == 200) 
+                        {
+                            // log the results to the console
+                            console.log(response.results);
+                            
+                            const results = response.results;
+
+                            // clear previous results
+                            clearInput();
+                            clearResults();
+
+                            // parse the results for readability
+                            parseResults(results);
+
+                            // render the results on the page
+                            renderResults();
+
+                        }
+                    }
+                )
+            }
+
+        };
+
+        const addToCollection = async function(gameGuid, type) {
+
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.CTRL.sendGBRequestGame}', gameGuid,
+                
+                function(response, event) 
+                    {
+                        if(event.statusCode == 200) 
+                        {
+                            var res = response.results;
+                            console.log(response.results);
+
+                            parseRes(res);
+                            // SUFACE THE COLLECTION MODAL
+                            collectionInput(state.res, type);
+
+                        }
+                    }
+                )
+
+        };
+
+        const convertGame = async function(gameGuid) {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.CTRL.convertGame}', gameGuid, state.ownedGameRT,
+                
+                function(response, event) 
+                    {
+                        if(event.statusCode == 200) 
+                        {
+                            // collapse menu
+                            var menu = document.querySelector('.slds-is-open');
+                            menu.classList.remove('slds-is-open');
+
+                            var sfid = response[0].Id
+
+                            // change icon
+                            renderConversion(gameGuid, sfid)
+
+                            let game = {}
+
+                            // get the game that was converted from the state object
+                            Object.values(state.results).forEach(el => {
+                                if(el.guid === gameGuid) {
+                                    game = el
+                                }
+                            })
+
+                            // toast the user
+                            successToast(game, 'collection', sfid);
+                            setTimeout(function(){
+                                var successToast = document.getElementById('success-toast');
+                                successToast.remove();
+                            },4500);                            
+
+                        }
+                    }
+                )
+        };
+
+        const clearInput = function() {
+            elements.searchInput.value = ''
+        };
+                    
+        const clearResults = function() {
+            elements.searchResBody.innerHTML = '';
+        };
+
+        const parseResults = results => {
+            
+            results.map((el, i) => {
+                
+                // map the api results to the state object for multiple games
+                state.results[i] = {
+                    id: el.id,
+                    guid: el.guid,
+                    name: el.name, 
+                    url: el.site_detail_url,
+                    image: el.image.icon_url,
+                    releaseDate: getReleaseDate(el)
+                    // releaseDate: el.original_release_date.toLocaleDateString('en-US')
+                };
+            });
+            
+        };
+
+        const parseRes = res => {
+            
+            // map the api results to the state object for a single game 
+            state.res = {
+                id: res.id,
+                guid: res.guid,
+                name: res.name, 
+                boxArt: res.image.small_url,
+                genres: getGenres(res),
+                platforms: getPlatforms(res),
+                releaseDate: getReleaseDate(res),
+                developers: getDevelopers(res),
+                publishers: getPublishers(res),
+                url: res.site_detail_url
+            };
+   
+        };
+
+        const getReleaseDate = function(el) {
+            // check if the game has been released
+            if (el.original_release_date) {
+                // set the date to released date
+                d = new Date(el.original_release_date);
+                return d.toLocaleDateString('en-US')
+            } else if (el.expected_release_year && el.expected_release_month) {
+                // convert the date to something more usuable
+                var day = (el.expected_release_day) ? el.expected_release_day : 1
+                d = new Date(el.expected_release_month + '/' + day + '/' + el.expected_release_year);
+                return d.toLocaleDateString('en-US')
+            } else if (el.expected_release_year) { 
+                d = el.expected_release_year
+                return d
+            } else {
+                d = '----------'
+                return d
+            }
+        }
+
+        const getPlatforms = function(res) {
+            let selectedPlatforms = []
+
+            // console.log(res.platforms)
+
+            res.platforms.forEach(el => {
+                if (state.platforms.indexOf(el.name) >= 0) {
+                    selectedPlatforms.push(el.name)
+                }
+            });
+
+            return selectedPlatforms
+        };
+
+        getString = function(res, type) {
+
+            if(res.type) {
+
+                let arr = []
+
+                res.type.forEach(el => {
+                    arr.push(el.name)
+                });
+            
+                str = arr.join(', ')
+
+                return str
+
+            } else {
+                return ''
+            }
+
+        }
+
+        const getDevelopers = function(res) {
+            let devs = []
+            if(res.developers) {
+                
+                res.developers.forEach(el => {
+                    devs.push(el.name)
+                });
+            
+                strDev = devs.join(', ')
+
+                return strDev
+
+            } else {
+                return ''
+            }
+        };
+
+        const getPublishers = function(res) {
+            
+        if(res.publishers) {
+
+            let pubs = []
+
+            res.publishers.forEach(el => {
+                pubs.push(el.name)
+            });
+
+            strPub = pubs.join(', ')
+
+            return strPub
+        
+        } else {
+                return ''
+            }
+
+        };
+                
+        const getGenres = function(res) {
+            
+        if(res.genres) {
+            let gnrs = []
+
+            res.genres.forEach(el => {
+                gnrs.push(el.name)
+            });
+
+            strGenres = gnrs.join(', ')
+
+            return strGenres
+
+            } else {
+                return ''
+            }
+
+        };
+                
+        const renderResults = function() {
+            // show the table
+            elements.searchResList.classList.remove('slds-hidden')
+            
+            // create results body
+            var markup = Object.values(state.results).map(el => createResult(el)).join('')
+
+            elements.searchResBody.insertAdjacentHTML('afterbegin', markup)
+
+        };      
+
+        const removeModal = function() {
+                    
+            // remove modal
+            var modal = document.getElementById('modal');
+            modal.remove();
+            
+            // remove backdrop
+            var backdrop = document.getElementById('backdrop');
+            backdrop.remove();
+
+            // collapse menu
+            var menu = document.querySelector('.slds-is-open');
+            menu.classList.remove('slds-is-open');
+        };
+
+        successToast = function(game, type, id) {
+            
+            // hmtl for success toast
+            var markup = `
+            <div class="slds-notify_container" id="success-toast">
+            <div class="slds-notify slds-notify--toast slds-theme_success" role="alert">
+                
+                <div class="slds-notify__content">
+                    <h2 class="slds-text-heading_small ">
+                        <a href="/lightning/r/Video_Game__c/${id}/view">${game.name}</a> was added to your ${type.charAt(0).toUpperCase() + type.slice(1)}.
+                    </h2>
+                </div>
+            </div>
+            </div>
+            `;
+            
+            elements.searchResList.insertAdjacentHTML('beforebegin', markup);   
+        };
+        
+        const createGame = function(type) {
+                    
+            var game = state.res
+            var vg = new SObjectModel.Video_Game__c();
+            var d = new Date(game.ReleaseDate);
+            
+            var specificFields = {};
+            
+            if (type === 'collection') {
+                    // COLLECTION FIELDS
+                    specificFields.RecordTypeId = state.ownedGameRT,
+                    specificFields.Currently_Playing__c = document.getElementById('game-playing').checked,
+                    specificFields.Purchase_Date__c = new Date(document.getElementById('game-purchase').value)
+                    
+                } else if (type === 'wishlist') {
+                    // WISHLIST FIELDS
+                    specificFields.RecordTypeId = state.likedGameRT,
+                    specificFields.Currently_Playing__c = false,
+                    specificFields.Purchase_Date__c = new Date(null)
+                    
+                }
+            
+            vg.create({ 
+                
+                // GENERIC FIELDS
+                Name: game.name,
+                Box_Art_URL__c: game.boxArt,
+                Release_Date__c: new Date(game.releaseDate),
+                Platform__c: document.getElementById('platform-id').value,
+                Amount__c: document.getElementById('game-amount').value,
+                GUID__c: game.guid,
+                Genre__c: game.genres,
+                Publisher__c: game.publishers,
+                Developer__c: game.developers,
+                Giant_Bomb_URL__c: game.url,
+                Notes__c: document.getElementById('game-notes').value,
+                
+                // SPECIFIC FIELDS
+                RecordTypeId: specificFields.RecordTypeId,
+                Currently_Playing__c: specificFields.Currently_Playing__c,
+                Purchase_Date__c: specificFields.Purchase_Date__c 
+                
+                
+            }, function(error, records) {
+                
+            if (error) {
+                alert(error.message);
+            } else {
+                                        
+                // TEST SHOW OTHER TOAST FORMAT #TEST           
+                // $.notify("I'm over here !");
+                
+                successToast(game, type, vg._props.Id);
+                setTimeout(function(){
+                    var successToast = document.getElementById('success-toast');
+                    successToast.remove();
+                },4500);
+                removeModal();
+
+                if (type === 'collection') {
+                    renderCollection()
+                } else {
+                    renderWishlist()
+                }
+            }
+            
+            })
+        };
+        
+        const renderCollection = function() {
+            var game = state.res
+
+            state.ownedGames.push(game.guid)
+
+            document.getElementById('status-' + game.guid).insertAdjacentHTML('beforeend',`<span class="slds-icon_container slds-icon_container_circle slds-icon-action-approval" title="Game is Owned" id="owned-${game.guid}"><svg class="slds-icon slds-icon_xx-small" aria-hidden="true"><use xlink:href="/apexpages/slds/latest/assets/icons/action-sprite/svg/symbols.svg#approval"></use></svg><span class="slds-assistive-text">Game is Owned</span></span>`)
+
+        };
+
+        const renderWishlist = function() {
+            var game = state.res
+
+            state.likedGames.push(game.guid)
+
+            document.getElementById('status-' + game.guid).insertAdjacentHTML('beforeend',`<span class="slds-icon_container slds-icon_container_circle slds-icon-action-share-thanks" title="Game is Liked" id="liked-${game.guid}"><svg class="slds-icon slds-icon_xx-small" aria-hidden="true"><use xlink:href="/apexpages/slds/latest/assets/icons/action-sprite/svg/symbols.svg#share_thanks"></use></svg><span class="slds-assistive-text">Game is Liked</span></span>`)
+        };
+
+        const renderConversion = function(gameGuid, sfid) {
+            // update the state
+            state.ownedGames.push({
+                GUID__c: gameGuid,
+                Id: sfid
+                })
+            state.likedGames.pop(gameGuid)
+
+            // remove the liked icon
+            document.getElementById('status-' + gameGuid).innerHTML = ''
+
+            // add the owned icon
+            document.getElementById('status-' + gameGuid).insertAdjacentHTML('beforeend',`<span class="slds-icon_container slds-icon_container_circle slds-icon-action-approval" title="Game is Owned" id="owned-${gameGuid}"><svg class="slds-icon slds-icon_xx-small" aria-hidden="true"><use xlink:href="/apexpages/slds/latest/assets/icons/action-sprite/svg/symbols.svg#approval"></use></svg><span class="slds-assistive-text">Game is Owned</span></span>`)
+
+        }
+
+        const createResult = el => 
+            `
+            <tr>
+                <td>
+                   ${state.check === false ? '<span class="slds-image"><svg aria-hidden="true" style="height: 50; width: 75"><image xlink:href="' + el.image + '" style="height: 50; width: 75"></image></svg></span>' : ''}
+                </td>
+                <td class="slds-cell-wrap"><a href="${el.url}">${el.name}</a></td>
+                <td>${el.releaseDate}</td>
+                <td id="status-${el.guid}">
+                    ${ownedGames(el.guid)}
+                </td>
+                <td>
+                    <div class="slds-dropdown-trigger slds-dropdown-trigger_click svga-menu-class" onclick="renderActions('${el.guid}')" role="menu" aria-expanded="false" id="menuId-${el.guid}">
+                        <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" aria-haspopup="true" tabindex="-1" title="More Actions">
+                            <svg class="slds-button__icon slds-button__icon_hint slds-button__icon_small" aria-hidden="true">
+                                <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#down"></use>
+                            </svg>
+                        </button>
+                        <div class="slds-dropdown slds-dropdown_right">
+                            
+                            <!-- ACTION ITEMS -->
+
+                            <ul class="slds-dropdown__list" role="menu" aria-label="Show More" id="actions-${el.guid}">
+                                
+                            </ul>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            `
+
+        const renderActions = function(el) {
+
+            // close other menus
+            var menus = document.querySelectorAll('.svga-menu-class');
+            
+            menus.forEach(el =>{
+                if (el.classList.contains('slds-is-open')) {
+                    el.classList.remove('slds-is-open')
+                }
+                
+            });
+
+            // remove previous actions in case status has changed
+            var actions = document.getElementById('actions-'+ el).innerHTML = '';
+            
+            // check the status of the game             
+            if (document.getElementById('liked-' + el)) {
+                // if liked
+                let sfid = ''
+
+                for (i = 0; i < state.likedGames.length; i++) {
+                    if (state.likedGames[i].GUID__c === el) {
+                        sfid = state.likedGames[i].Id
+                    }
+                }
+
+                // view record
+                var viewRecord = `<li class="slds-dropdown__item" role="presentation"><a href="/lightning/r/Video_Game__c/${sfid}/view" role="menuitem" tabindex="-1"><span class="slds-truncate" title="View in Wishlist">View in Wishlist</span></a></li>`
+                var convertRecord = `<li class="slds-dropdown__item" role="presentation" onclick="convertGame('${el}')"><a href="javascript:void(0);" role="menuitem" tabindex="-1"><span class="slds-truncate" title="Convert to Collection">Convert to Collection</span></a></li>`
+
+                document.getElementById('actions-'+ el).insertAdjacentHTML('beforeend', viewRecord + convertRecord) 
+                
+
+            // switch to collection
+            } else if (document.getElementById('owned-' + el)) {
+                // if collection
+                let sfid = ''
+
+                for (i = 0; i < state.ownedGames.length; i++) {
+                    if (state.ownedGames[i].GUID__c === el) {
+                        sfid = state.ownedGames[i].Id
+                    }
+                }
+
+                // view record
+                var viewRecord = `<li class="slds-dropdown__item" role="presentation"><a href="/lightning/r/Video_Game__c/${sfid}/view" role="menuitem" tabindex="-1"><span class="slds-truncate" title="View in Collection">View in Collection</span></a></li>`
+
+                
+
+                document.getElementById('actions-'+ el).insertAdjacentHTML('beforeend', viewRecord) 
+
+            } else {
+                // nothing
+                
+                // add to Wishlist
+                var markupWishlist = `<li class="slds-dropdown__item" role="presentation" onclick="addToCollection('${el}','wishlist')"><a href="javascript:void(0);" role="menuitem" tabindex="-1"><span class="slds-truncate" title="Add to Wishlist">Add to Wishlist</span></a></li>`
+
+                // add to collection
+                var markupCollection = `<li class="slds-dropdown__item" role="presentation" onclick="addToCollection('${el}','collection')"><a href="javascript:void(0);" role="menuitem" tabindex="-1"><span class="slds-truncate" title="Add to Collection">Add to Collection</span></a></li>`
+
+                document.getElementById('actions-'+ el).insertAdjacentHTML('beforeend', markupWishlist) 
+                document.getElementById('actions-'+ el).insertAdjacentHTML('beforeend', markupCollection)
+
+            }
+
+            // open the menu
+                        
+            var menuDiv = document.getElementById('menuId-' + el)
+
+            menuDiv.classList.toggle('slds-is-open');
+                        
+        };
+
+        const collectionInput = function(game, type) {                 
+                
+                var markup = `
+                <section id="modal" role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                        <header class="slds-modal__header">
+                            <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Add Game to ${type.charAt(0).toUpperCase() + type.slice(1)}</h2>
+                            <p class="slds-m-top_x-small">Specify the fields below to save this game to your ${type}</a>.
+                            </p>
+                        </header>
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        
+                        <p>
+                            <div class="slds-image">
+                                <span>
+                                <img alt="Box Art" src="${game.boxArt}" title="Box Art" class="slds-align_absolute-center" />
+                                </span>
+                            </div>
+                            
+                        </p>
+                        
+                        <p>
+                        
+                        <!-- STATIC FIELDS -->
+                        <div class="slds-form--stacked">
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="game-title">Title</label>
+                                <div class="slds-form-element__control">
+                                    <input id="game-title" class="slds-input" type="text" value="${game.name}" disabled="" />
+                                </div>
+                            </div>
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="game-released">Release Date</label>
+                                <div class="slds-form-element__control">
+                                    <input id="game-released" class="slds-input" type="text" value="${game.releaseDate}" disabled=""/>
+                                </div>
+                            </div>
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="game-genre">Genre(s)</label>
+                                <div class="slds-form-element__control">
+                                    <input id="game-genre" class="slds-input" type="text" value="${game.genres}" disabled=""/>
+                                </div>
+                            </div>
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="game-developers">Developer(s)</label>
+                                <div class="slds-form-element__control">
+                                    <input id="game-developers" class="slds-input" type="text" value="${game.developers}" disabled=""/>
+                                </div>
+                            </div>
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="game-publishers">Publisher(s)</label>
+                                <div class="slds-form-element__control">
+                                    <input id="game-publishers" class="slds-input" type="text" value="${game.publishers}" disabled=""/>
+                                </div>
+                            </div>
+                            
+                            
+                            <!-- / C: PURCHASE DATE -->
+                            ${type === 'collection' ? '<div class="slds-form-element"><label class="slds-form-element__label" for="game-released" >Purchase Date</label> <div class="slds-form-element__control"> <input id="game-purchase" class="slds-input" type="date"/> </div> </div>' : ''}
+                            
+                            
+                            <div class="slds-form-element">
+                            <label class="slds-form-element__label" for="game-released">Amount</label>
+                            <div class="slds-form-element__control">
+                                <input id="game-amount" class="slds-input" type="number" value="60.00" min="0"/>
+                            </div>
+                            </div> 
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="platform-id">Select a Platform</label>
+                                <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                    <select id="platform-id" class="slds-select">
+                                    ${game.platforms.map(el => {                                   
+                                        return `<option value="${el}">${el}</option>`
+                                    })}
+                                    </select>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="slds-form-element">
+                            <label class="slds-form-element__label" for="game-notes">Notes</label>
+                            <div class="slds-form-element__control">
+                                <textarea id="game-notes" class="slds-textarea"></textarea>
+                            </div>
+                            </div>
+                            <div class="slds-form-element ${type === 'wishlist' ? 'slds-hidden' : ''}">
+                            <div class="slds-form-element__control">
+                                <label class="slds-checkbox" for="game-playing">
+                                <input name="default" type="checkbox" id="game-playing" />
+                                <span class="slds-checkbox--faux"></span>
+                                <span class="slds-form-element__label">Add to Currently Playing</span>
+                                </label>
+                            </div>
+                            </div>
+                        </div>
+                        </p>
+                        
+                        </div>
+                        <footer class="slds-modal__footer">
+                            <button class="slds-button slds-button_neutral" onclick="removeModal()">Cancel</button>
+                            <button class="slds-button slds-button_brand" onclick="createGame('${type}')">Save</button>
+                        </footer>
+                    </div>
+                </section>
+                <div id="backdrop" class="slds-backdrop slds-backdrop_open"></div>`
+
+                elements.searchResList.insertAdjacentHTML('beforeend', markup);
+
+                // update purchase date to today if collection
+
+                if (type === 'collection') {
+
+                    Date.prototype.toDateInputValue = (function() {
+                        var local = new Date(this);
+                        local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+                        return local.toJSON().slice(0,10);
+                    });
+
+                    document.getElementById('game-purchase').value = new Date().toDateInputValue();
+                }
+                
+        };
+
+        const ownedGames = function(el) {
+            // add the status icons for owned or liked games
+            let owned = false
+            let liked = false
+
+            // loop through owned games and add the icon for liked
+            for (i = 0; i < state.ownedGames.length; i++) {
+                if(state.ownedGames[i].GUID__c === el) {
+                    return `
+                    <span class="slds-icon_container slds-icon_container_circle slds-icon-action-approval" title="Game is Owned" id="owned-${el}">
+                        <svg class="slds-icon slds-icon_xx-small" aria-hidden="true">
+                            <use xlink:href="/apexpages/slds/latest/assets/icons/action-sprite/svg/symbols.svg#approval"></use>
+                        </svg>
+                        <span class="slds-assistive-text">Game is Owned</span>
+                    </span>`
+
+                    owned = true
+                }
+
+            }
+
+            // loop through liked games and add the icon for liked
+            for (i = 0; i < state.likedGames.length; i++) {
+                if(state.likedGames[i].GUID__c === el) {
+                    return `
+                    <span class="slds-icon_container slds-icon_container_circle slds-icon-action-share-thanks" title="Game is Liked" id="liked-${el}">
+                        <svg class="slds-icon slds-icon_xx-small" aria-hidden="true">
+                            <use xlink:href="/apexpages/slds/latest/assets/icons/action-sprite/svg/symbols.svg#share_thanks"></use>
+                        </svg>
+                        <span class="slds-assistive-text">Game is Liked</span>
+                    </span>`
+
+                    liked = true
+                }
+
+            }
+
+            if (owned === false && liked === false) {
+                return ''
+            }
+             
+        };
+
+        const init = function() {
+            // init the application
+            mobileCheck();
+            getGames();
+
+        }();
+
+        </script>
+    
+        </body>
+    </html> 
+</apex:page>
+
+
+
