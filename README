@@ -3,3 +3,9 @@ Installation instructions:
 1. Unmanged Package: https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008BuOc&isdtp=p1
 
 2. From Files
+
+2a. Create a new Visualforce page called "Video_Game_App" and replace the contents with  the Video_Game_App.page file
+2b. Create a new Apex Class called "CTRL" and replace the contents with the CTRL.apxc file
+2c. Optional - create three Apex Classes called, "CTRL_Test","sendGBRequestGameMock","sendGBRequestMock" and replace the contents with the respecitve files
+2d. Get GB API Key from "https://www.giantbomb.com/api/" and load it as a static resource named "GB_API_KEY"
+2e. Update the RecordTypeId's for ownedGameRT and likedGameRT (lines 155/156) in the Visualforce page with the Collection and Wishlist RecordTypeId's
