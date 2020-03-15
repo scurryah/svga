@@ -1,0 +1,66 @@
+@isTest
+public class CTRL_Test
+{
+    @isTest public static void sendGBRequestMock()
+    {
+        Test.setMock(HttpCalloutMock.class, new sendGBRequestMock());     
+        Map<String, Object> result = CTRL.sendGBRequest('Halo');
+        System.debug(result);
+        Map<String, Object> expectedResult = (Map<String, Object>) JSON.deserializeuntyped('{"error":"OK","limit":10,"offset":0,"number_of_page_results":10,"number_of_total_results":19,"status_code":1,"results":[{"aliases":"Halo 1"},{"name": "Game"}]}');         
+        System.assertEquals(result, expectedResult);                            
+    }
+    
+    @isTest public static void sendGBRequestGameMock()
+    {
+        Test.setMock(HttpCalloutMock.class, new sendGBRequestGameMock());     
+        Map<String, Object> result = CTRL.sendGBRequestGame('Halo');
+        System.debug(result);
+        Map<String, Object> expectedResult = (Map<String, Object>) JSON.deserializeuntyped('{"error":"OK","limit":10,"offset":0,"number_of_page_results":10,"number_of_total_results":19,"status_code":1,"results":[{"aliases":"Halo 1"},{"name": "Game"}]}');         
+        System.assertEquals(result, expectedResult);
+    }
+    
+    @isTest static void TestgetGames()
+    {
+        List<Video_Game__c> testlist = CTRL.getGames('0126g000000ZDGBAA4');
+        List<Video_Game__c> gamelist = [SELECT GUID__c FROM Video_Game__c WHERE GUID__c != null AND RecordTypeId = :'0126g000000ZDGBAA4'];
+        System.assertEquals(gamelist, testlist);
+    }
+    
+    @isTest static void TestconvertColl()
+    {
+        //Create test video game record
+        Video_Game__c cp = new Video_Game__c();
+        cp.name = 'Final Fantasy XV';
+        cp.RecordTypeId = '0126g000000ZDGBAA4';
+        cp.GUID__c = '3030-21006';
+        cp.Amount__c = 0;
+        insert cp;       
+        
+        List<Video_Game__c> testlist = CTRL.convertGame('3030-21006','0126g000000ZDG6AAO');
+        List<Video_Game__c> gamelist = [SELECT Id, RecordTypeId FROM Video_Game__c WHERE GUID__c = :'3030-21006'];
+         for(Video_Game__c g :gamelist){
+           g.RecordTypeId = '0126g000000ZDG6AAO';
+         }
+        
+        System.assertEquals(gamelist, testlist);
+    }
+    
+    @isTest static void TestconvertWish()
+    {
+        //Create test video game record
+        Video_Game__c cp = new Video_Game__c();
+        cp.name = 'Cyberpunk 2077';
+        cp.RecordTypeId = '0126g000000ZDG6AAO';
+        cp.GUID__c = '3030-38456';
+        cp.Amount__c = 60;
+        insert cp;
+        
+        List<Video_Game__c> testlist = CTRL.convertGame('3030-38456','0126g000000ZDGBAA4');
+        List<Video_Game__c> gamelist = [SELECT Id, RecordTypeId FROM Video_Game__c WHERE GUID__c = :'3030-38456'];
+         for(Video_Game__c g :gamelist){
+           g.RecordTypeId = '0126g000000ZDGBAA4';
+         }
+        
+        System.assertEquals(gamelist, testlist);
+    }        
+}

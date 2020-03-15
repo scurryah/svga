@@ -1,0 +1,14 @@
+@isTest
+global class sendGBRequestMock implements HttpCalloutMock
+{
+    //Implement this interface method
+    global HTTPResponse respond(HTTPRequest request)
+    {
+        // Create a fake response
+        HttpResponse response = new HttpResponse();
+        response.setHeader('Content-Type', 'application/json');
+        response.setBody('{"error":"OK","limit":10,"offset":0,"number_of_page_results":10,"number_of_total_results":19,"status_code":1,"results":[{"aliases":"Halo 1"},{"name": "Game"}]}');
+        response.setStatusCode(200);
+        return response;
+    }
+}
